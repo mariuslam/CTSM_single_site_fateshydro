@@ -2279,7 +2279,7 @@ contains
  subroutine wrap_hydraulics_drive(this, bounds_clump, nc, &
                                  fn, filterp, &
                                  soilstate_inst, waterstate_inst, waterflux_inst, &
-                                 solarabs_inst, energyflux_inst)
+                                 solarabs_inst, energyflux_inst, temperature_inst)
 
 
    implicit none
@@ -2288,6 +2288,7 @@ contains
    integer,intent(in)                             :: nc
    integer, intent(in)                            :: fn
    integer, intent(in)                            :: filterp(fn)
+   type(temperature_type)  , intent(in)           :: temperature_inst
    type(soilstate_type)    , intent(inout)        :: soilstate_inst
    type(waterstate_type)   , intent(inout)        :: waterstate_inst
    type(waterflux_type)    , intent(inout)        :: waterflux_inst
@@ -2309,6 +2310,7 @@ contains
 
 
    dtime = get_step_size()
+
 
    ! Prepare Input Boundary Conditions
    ! ------------------------------------------------------------------------------------
@@ -2333,6 +2335,8 @@ contains
             waterstate_inst%h2osoi_liq_col(c,1:nlevsoil)
       this%fates(nc)%bc_in(s)%eff_porosity_sl(1:nlevsoil) = &
             soilstate_inst%eff_porosity_col(c,1:nlevsoil)
+      this%fates(nc)%bc_in(s)%temp_hard_sl(1:nlevsoil)    = & !marius
+            temperature_inst%t_soisno_col(c,1:nlevsoil)
 
       do ifp = 1, this%fates(nc)%sites(s)%youngest_patch%patchno 
          p = ifp+col%patchi(c)
